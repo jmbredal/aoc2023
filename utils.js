@@ -16,6 +16,9 @@ Array.prototype.max = function() {
   return Math.max(...this);
 }
 
+Set.prototype.intersection = function(otherSet) {
+  return new Set([...this].filter(x => otherSet.has(x)));
+}
 
 if (typeof Array.prototype.flatMap !== 'function') {
   // eslint-disable-next-line no-extend-native
