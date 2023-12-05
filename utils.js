@@ -45,8 +45,20 @@ if (typeof Array.prototype.flatMap !== 'function') {
   })
 }
 
+export function chunk(arr, size) {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+}
+
 export function range(size, startAt = 0) {
   return [...Array(size).keys()].map(i => i + startAt);
+}
+
+export function* xrange(size, startAt = 0) {
+  for (let i = 0; i < size; i++) {
+    yield i + startAt;
+  }
 }
 
 export function readLines(filename) {
