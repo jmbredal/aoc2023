@@ -24,24 +24,12 @@ const createMapping = (data) => {
 function solve1(input) {
   const data = readSplitLines(input);
   const seeds = data[0].split(': ')[[1]].split(' ').toNumbers();
-  const seedToSoil = createMapping(data[1]);
-  const soilToFertilizer = createMapping(data[2]);
-  const fertilizerToWater = createMapping(data[3]);
-  const waterToLight = createMapping(data[4]);
-  const lightToTemp = createMapping(data[5]);
-  const tempToHumidity = createMapping(data[6]);
-  const humidityToLocation = createMapping(data[7]);
+  const maps = data.slice(1).map(createMapping);
 
-  const result = seeds
-    .map(seedToSoil)
-    .map(soilToFertilizer)
-    .map(fertilizerToWater)
-    .map(waterToLight)
-    .map(lightToTemp)
-    .map(tempToHumidity)
-    .map(humidityToLocation)
-    .min();
-  return result;
+  const applyMappings = (value, mapping) => mapping(value);
+  const composeMappings = (value, mappings) => mappings.reduce(applyMappings, value);
+
+  return seeds.map(seed => composeMappings(seed, maps)).min();
 }
 
 function solve2(input) {
@@ -50,28 +38,15 @@ function solve2(input) {
   const rangeGenerators = chunk(data[0].split(': ')[[1]].split(' ').toNumbers(), 2)
     .flatMap(([a, b]) => xrange(b, a));
 
-  const seedToSoil = createMapping(data[1]);
-  const soilToFertilizer = createMapping(data[2]);
-  const fertilizerToWater = createMapping(data[3]);
-  const waterToLight = createMapping(data[4]);
-  const lightToTemp = createMapping(data[5]);
-  const tempToHumidity = createMapping(data[6]);
-  const humidityToLocation = createMapping(data[7]);
-
-  const mapSeed = (s) => [s]
-    .map(seedToSoil)
-    .map(soilToFertilizer)
-    .map(fertilizerToWater)
-    .map(waterToLight)
-    .map(lightToTemp)
-    .map(tempToHumidity)
-    .map(humidityToLocation);
+  const maps = data.slice(1).map(createMapping);
+  const applyMappings = (value, mapping) => mapping(value);
+  const mapSeed = s => maps.reduce(applyMappings, s);
 
   let minLocation = Number.MAX_VALUE;
   // Brute the force Luke
   for (const generator of rangeGenerators) {
     for (const seed of generator) {
-      const location = mapSeed(seed)[0];
+      const location = mapSeed(seed);
       if (location < minLocation) minLocation = location;
     }
   }
@@ -80,7 +55,7 @@ function solve2(input) {
 };
 
 console.log('-----------');
-// console.log(solve1(test1File));
-// console.log(solve1(inputFile));
-// console.log(solve2(test1File));
+console.log(solve1(test1File));
+console.log(solve1(inputFile));
+console.log(solve2(test1File));
 // console.log(solve2(inputFile));
