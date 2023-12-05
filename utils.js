@@ -8,12 +8,20 @@ Array.prototype.unique = function() {
   return [...new Set(this)];
 }
 
+Array.prototype.toMap = function() {
+  return new Map(this);
+}
+
 Array.prototype.sum = function() {
   return this.reduce((a, b) => a + b, 0);
 }
 
 Array.prototype.max = function() {
   return Math.max(...this);
+}
+
+Array.prototype.min = function() {
+  return Math.min(...this);
 }
 
 Set.prototype.intersection = function(otherSet) {
@@ -37,6 +45,14 @@ if (typeof Array.prototype.flatMap !== 'function') {
   })
 }
 
+export function range(size, startAt = 0) {
+  return [...Array(size).keys()].map(i => i + startAt);
+}
+
 export function readLines(filename) {
   return readFileSync(filename).toString().split('\r\n').filter(l => l);
+}
+
+export function readSplitLines(filename) {
+  return readFileSync(filename).toString().split('\r\n\r\n').filter(Boolean);
 }
