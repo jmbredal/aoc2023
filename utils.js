@@ -24,6 +24,10 @@ Array.prototype.min = function() {
   return Math.min(...this);
 }
 
+Array.prototype.zip = function(other) {
+  return this.map((k, i) => [k, other[i]]);
+}
+
 Set.prototype.intersection = function(otherSet) {
   return new Set([...this].filter(x => otherSet.has(x)));
 }
