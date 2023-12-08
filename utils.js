@@ -1,52 +1,52 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
-Array.prototype.toNumbers = function() {
-  return this.map(x => +x);
-}
+Array.prototype.toNumbers = function () {
+  return this.map((x) => +x);
+};
 
-Array.prototype.unique = function() {
+Array.prototype.unique = function () {
   return [...new Set(this)];
-}
+};
 
-Array.prototype.toMap = function() {
+Array.prototype.toMap = function () {
   return new Map(this);
-}
+};
 
-Array.prototype.sum = function() {
+Array.prototype.sum = function () {
   return this.reduce((a, b) => a + b, 0);
-}
+};
 
-Array.prototype.max = function() {
+Array.prototype.max = function () {
   return Math.max(...this);
-}
+};
 
-Array.prototype.min = function() {
+Array.prototype.min = function () {
   return Math.min(...this);
-}
+};
 
-Array.prototype.zip = function(other) {
+Array.prototype.zip = function (other) {
   return this.map((k, i) => [k, other[i]]);
-}
+};
 
-Set.prototype.intersection = function(otherSet) {
-  return new Set([...this].filter(x => otherSet.has(x)));
-}
+Set.prototype.intersection = function (otherSet) {
+  return new Set([...this].filter((x) => otherSet.has(x)));
+};
 
-if (typeof Array.prototype.flatMap !== 'function') {
+if (typeof Array.prototype.flatMap !== "function") {
   // eslint-disable-next-line no-extend-native
-  Object.defineProperty(Array.prototype, 'flatMap', {
+  Object.defineProperty(Array.prototype, "flatMap", {
     enumerable: false,
     // https://bterlson.github.io/proposal-flatMap/#sec-Array.prototype.flatMap
-    value: function flatMap (callback, thisArg = undefined) {
-      const O = toObject(this)
-      const A = arraySpeciesCreate(O, 0)
+    value: function flatMap(callback, thisArg = undefined) {
+      const O = toObject(this);
+      const A = arraySpeciesCreate(O, 0);
       // typo in the github pages render, it's missing
       // the ", 1" argument, but it is present in
       // the master source code
-      flattenIntoArray(A, O, 0, 1, callback, thisArg)
-      return A
-    }
-  })
+      flattenIntoArray(A, O, 0, 1, callback, thisArg);
+      return A;
+    },
+  });
 }
 
 export function chunk(arr, size) {
@@ -56,7 +56,7 @@ export function chunk(arr, size) {
 }
 
 export function range(size, startAt = 0) {
-  return [...Array(size).keys()].map(i => i + startAt);
+  return [...Array(size).keys()].map((i) => i + startAt);
 }
 
 export function* xrange(size, startAt = 0) {
@@ -67,15 +67,20 @@ export function* xrange(size, startAt = 0) {
 
 export function groupBy(array, key) {
   return array.reduce((result, currentValue) => {
-      (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
-      return result;
+    (result[currentValue[key]] = result[currentValue[key]] || []).push(
+      currentValue
+    );
+    return result;
   }, {});
 }
 
 export function readLines(filename) {
-  return readFileSync(filename).toString().split('\n').filter(l => l);
+  return readFileSync(filename)
+    .toString()
+    .split("\n")
+    .filter((l) => l);
 }
 
 export function readSplitLines(filename) {
-  return readFileSync(filename).toString().split('\r\n\r\n').filter(Boolean);
+  return readFileSync(filename).toString().split("\n\n").filter(Boolean);
 }
