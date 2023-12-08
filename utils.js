@@ -65,8 +65,15 @@ export function* xrange(size, startAt = 0) {
   }
 }
 
+export function groupBy(array, key) {
+  return array.reduce((result, currentValue) => {
+      (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
+      return result;
+  }, {});
+}
+
 export function readLines(filename) {
-  return readFileSync(filename).toString().split('\r\n').filter(l => l);
+  return readFileSync(filename).toString().split('\n').filter(l => l);
 }
 
 export function readSplitLines(filename) {
