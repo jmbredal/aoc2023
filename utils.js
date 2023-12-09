@@ -74,13 +74,24 @@ export function groupBy(array, key) {
   }, {});
 }
 
+function getLineEnding(fileContent) {
+  return /\r\n/.test(fileContent) ? "\r\n" : "\n";
+}
+
+function getFileAsText(filename) {
+  return readFileSync(filename).toString();
+}
+
 export function readLines(filename) {
-  return readFileSync(filename)
-    .toString()
-    .split("\n")
-    .filter((l) => l);
+  const fileContent = getFileAsText(filename);
+  const lineEnding = getLineEnding(fileContent);
+
+  return fileContent.split(lineEnding).filter(Boolean);
 }
 
 export function readSplitLines(filename) {
-  return readFileSync(filename).toString().split("\n\n").filter(Boolean);
+  const fileContent = getFileAsText(filename);
+  const lineEnding = getLineEnding(fileContent);
+
+  return fileContent.split(lineEnding + lineEnding).filter(Boolean);
 }
