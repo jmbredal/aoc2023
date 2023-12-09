@@ -39,8 +39,7 @@ const findNextValue2 = (history) => {
     .map((h) => h[0])
     .reduce((acc, curr, index, arr) => {
       if (index === arr.length - 1) return acc;
-      acc = arr[index + 1] - acc;
-      return acc;
+      return arr[index + 1] - acc;
     }, 0);
 };
 
