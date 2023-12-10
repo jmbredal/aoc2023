@@ -1,10 +1,7 @@
-import { start } from "repl";
 import { readLines } from "../utils.js";
 
 const inputFile = "input.txt";
 const testFile = "test.txt";
-
-class Point {}
 
 const getStartPoint = (map) =>
   map.reduce((start, line, y) => {
@@ -15,77 +12,60 @@ const getStartPoint = (map) =>
     return start;
   }, []);
 
-const getRelativePoint = (position, vector) => {
-  return [position[0] + vector[0], position[1] + vector[1]];
-};
+const getVector = (point1, point2) => {
+  return [point2[0] - point1[0], point2[1] - point1[1]];
+}
 
-const getValue = (point, map) => {
-  const x = point[0];
-  const y = point[1];
-  return map[y][x];
-};
+const addVector = (point, vector) => {
+  return [point[0] + vector[0], point[1] + vector[1]];
+}
 
-const getExits = (position, map) => {
-  const exits = [];
-  const west = "-LF";
-  const east = "-7J";
-  const north = "|F7";
-  const south = "|JL";
+const traverse = (previousPoint, currentPoint, map) => {
+  const x = currentPoint[0];
+  const y = currentPoint[1];
+  const tile = map[y][x];
 
-  const eastPoint = getRelativePoint(position, [1, 0], map);
-  const eastValue = getValue(eastPoint, map);
-  const westPoint = getRelativePoint(position, [-1, 0], map);
-  const westValue = getValue(westPoint, map);
-  const northPoint = getRelativePoint(position, [0, -1], map);
-  const northValue = getValue(northPoint, map);
-  const southPoint = getRelativePoint(position, [0, 1], map);
-  const southValue = getValue(southPoint, map);
-  if (east.includes(eastValue)) exits.push(eastPoint);
-  if (west.includes(westValue)) exits.push(westPoint);
-  if (north.includes(northValue)) exits.push(northPoint);
-  if (south.includes(southValue)) exits.push(southPoint);
+  const previousDir = getVector(currentPoint, previousPoint);
 
-  return exits;
-};
-
-const pointToString = (point) => `${point[0]}:${point[1]}`;
-
-const buildLoop = (map, startPoint) => {
-  let position = startPoint;
-  const visited = [pointToString(startPoint)];
-  // choose one
-  let current = getExits(position, map)[0];
-  const path = [];
-
-  console.log(visited, current);
-
-  while (true) {
-    visited.push(pointToString(current));
-    const exits = getExits(current, map).filter(
-      (e) => !visited.includes(pointToString(e))
-    );
-    console.log(exits);
-    // if (!exit) break;
-    // current = exit;
-    // path.push(pointToString(exit));
-    break;
+  const vectors = {
+    "-": [[-1, 0], [1, 0]],
+    "|": [[0, -1], [0, 1]],
+    "F": [[0, 1], [1, 0]],
+    "L": [[0, -1], [1, 0]],
+    "J": [[-1, 0], [0, -1]],
+    "7": [[0, 1], [-1, 0]],
   }
 
-  return path;
-};
+  const isNotPreviousDir = v => !(v[0] === previousDir[0] && v[1] === previousDir[1]);
+  const newVector = vectors[tile].filter(isNotPreviousDir)[0];
+  const newPoint = addVector(currentPoint, newVector);
+
+  return newPoint;
+}
 
 function solve1(input) {
   const map = readLines(input);
   const startPoint = getStartPoint(map);
-  const loop = buildLoop(map, startPoint);
 
-  return loop;
+  // Kickstart search down
+  let previousPoint = startPoint;
+  let current = addVector(startPoint, [0, 1]);
+  let counter = 1;
+
+  while (map[current[1]][current[0]] !== 'S') {
+    const next = traverse(previousPoint, current, map);
+    previousPoint = current;
+    current = next;
+    counter++;
+  }
+
+  return counter / 2;
 }
 
-function solve2(input) {}
+function solve2(input) { }
 
 console.log("-----------");
 console.log(solve1(testFile));
-// console.log(solve1(inputFile));
+console.log(solve1(inputFile));
 // console.log(solve2(testFile));
 // console.log(solve2(inputFile));
